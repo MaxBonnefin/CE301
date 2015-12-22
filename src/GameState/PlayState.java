@@ -32,7 +32,7 @@ public class PlayState extends GameState{
 
         tileMap = new TileMap(50); //TODO get proper tileset
         tileMap.loadTiles("/Tilesets/tileset.png");
-        tileMap.loadMap("/Maps/map1.map");
+        tileMap.loadMap("/Maps/map2.map");
         tileMap.setPosition(0,0);
 
         player = new Player(tileMap);
@@ -94,7 +94,9 @@ public class PlayState extends GameState{
         if(k == KeyEvent.VK_D){
             player.setRight(true);
         }
-
+        if(k == KeyEvent.VK_SHIFT){
+            player.setDodging(true);
+        }
         //saving game
         if(k == KeyEvent.VK_F5){
             try{
@@ -130,6 +132,9 @@ public class PlayState extends GameState{
 
         if(k == KeyEvent.VK_SPACE){
             player.setSlashing(false);
+        }
+        if(k == KeyEvent.VK_SHIFT){
+            player.setDodging(false);
         }
     }
 

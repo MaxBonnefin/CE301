@@ -16,6 +16,8 @@ public class Player extends GameObject {
     private BufferedImage sword;
     public double angle;
 
+    private long dodgeTime = 0;
+    private long time = 0;
 
     //slash attack
     private boolean slashing;
@@ -104,6 +106,14 @@ public class Player extends GameObject {
         checkObstacleCollision();
         setPosition(xTemp, yTemp);
 
+        //update dodging
+        long newTime = System.nanoTime();
+        if(dodging && newTime >= (dodgeTime + 125000000)){
+            setDodging(false);
+            moveSpeed = 0.4;
+            maxSpeed = 1.8;
+        }
+
         //update rotation angle
         angle = Math.atan2(MouseInfo.getPointerInfo().getLocation().getY() - y - yMap - height / 2, MouseInfo.getPointerInfo().getLocation().getX() - x - xMap - width / 2) - Math.PI / 2;
 
@@ -132,9 +142,26 @@ public class Player extends GameObject {
     public int getMaxHealth(){
         return maxHealth;
     }
-
     public void setSlashing(boolean b){
-        slashing = b;
+        if(!dodging){
+            slashing = b;
+        }
+    }
+
+    @Override
+    public void setDodging(boolean b){
+        if(System.nanoTime() - time > 500000000){
+            dodging = b;
+            if(dodging){
+                moveSpeed = 0.8;
+                maxSpeed = 9;
+                dodgeTime = System.nanoTime();
+            }else if(!dodging){
+                moveSpeed = 0.4;
+                maxSpeed = 1.8;
+            }
+            time = System.nanoTime();
+        }
     }
 
 }

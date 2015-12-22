@@ -31,7 +31,7 @@ public abstract class GameObject {
 
     //movement
     protected boolean left, right, up, down;
-    protected boolean rolling; //TODO
+    protected boolean dodging;
 
     protected double moveSpeed;
     protected double maxSpeed;
@@ -171,7 +171,5 @@ public abstract class GameObject {
     public void setDown(boolean b){
         down = b;
     }
-    public void setRolling(boolean b){
-        rolling = b;
-    }
+    public void setDodging(boolean b){dodging = b; }
 }
