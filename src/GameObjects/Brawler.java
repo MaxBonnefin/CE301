@@ -202,4 +202,6 @@ public class Brawler extends GameObject {
     public int getMaxHealth(){
         return maxHealth;
     }
+    public boolean isDead(){ return dead; }
+
 }

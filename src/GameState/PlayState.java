@@ -10,16 +10,19 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 
 public class PlayState extends GameState{
 
-    public static double mouseX;
-    public static double mouseY;
     private TileMap tileMap;
-
     private Player player;
-    private Brawler brawler;
-    private Brawler brawler2;
+    private ArrayList<Brawler> brawlers;
+
+
+    private int score = 0;
+    private int wave = 1;
+    private int lastWave = 1;
+    private int lastHealth;
 
 
     public PlayState(GameStateManager gsm){
@@ -38,10 +41,21 @@ public class PlayState extends GameState{
         player = new Player(tileMap);
         player.setPosition(100,100);
 
-        brawler = new Brawler(tileMap);
-        brawler.setPosition(100,300);
-        brawler2 = new Brawler(tileMap);
-        brawler2.setPosition(100, 400);
+        brawlers = new ArrayList<Brawler>();
+        Brawler b;
+        Point[] points = new Point[] {
+                new Point(200, 50),
+                new Point(300,50),
+                new Point(400,50),
+                new Point(500,50),
+                new Point(600,50),
+        };
+        for(int i = 0; i < points.length; i++){
+            b = new Brawler(tileMap);
+            b.setPosition(points[i].x, points[i].y);
+            brawlers.add(b);
+        }
+
     }
 
     @Override
@@ -49,10 +63,29 @@ public class PlayState extends GameState{
         //update player
         player.update();
         //update brawlers
-        brawler.update();
-        brawler2.update();
+        for(int i = 0; i < brawlers.size(); i++){
+            Brawler b = brawlers.get(i);
+            b.update();
+            if(b.isDead()){
+                brawlers.remove(i);
+                score += 10;
+                i--;
+            }
+        }
         //keeps camera centered on player
         tileMap.setPosition(GamePanel.WIDTH / 2 - player.getX(), GamePanel.HEIGHT / 2 - player.getY());
+
+        //update score
+        if(player.getHealth()< lastHealth){
+            score--;
+        }
+        lastHealth = player.getHealth();
+
+        if(wave>lastWave){
+            score += wave * 100;
+        }
+        lastWave = wave;
+
     }
 
     @Override
@@ -65,8 +98,10 @@ public class PlayState extends GameState{
         tileMap.render(g);
 
         //render brawlers
-        brawler.render(g);
-        brawler2.render(g);
+        for(int i = 0; i < brawlers.size(); i++){
+            brawlers.get(i).render(g);
+        }
+
         //render player
         player.render(g);
 
@@ -76,6 +111,8 @@ public class PlayState extends GameState{
         g.setFont(font);
         g.setColor(Color.WHITE);
         g.drawString("Health: " + player.getHealth()+ "/" + player.getMaxHealth(), 5, 25);
+        g.drawString("Score: " + score, 5, 50);
+
 
     }
 
