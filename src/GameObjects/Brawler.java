@@ -40,7 +40,21 @@ public class Brawler extends GameObject {
             e.printStackTrace();
         }
     }
-    
+
+    public void hit(int damage){
+        if(dead){
+            return;
+        }
+        health -= damage;
+        if (health < 0){
+            health = 0;
+        }
+        if (health == 0){
+            dead = true;
+        }
+
+    }
+
     public void update(){
         //update position
         getNextPosition();

@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class Player extends GameObject {
 
@@ -46,6 +47,26 @@ public class Player extends GameObject {
             sword = ImageIO.read(getClass().getResourceAsStream("/Sprites/sword.png"));
         }catch(Exception e){
             e.printStackTrace();
+        }
+    }
+
+    public void checkAttack(ArrayList<Brawler> brawlers){
+
+        //check slash
+        if(slashing){
+
+            for(int i = 0; i < brawlers.size(); i++){
+                Brawler b = brawlers.get(i);
+
+                double theta = Math.atan((b.getY() - y)/(b.getX() - x));
+
+                //calculate distance using pythagorean theorem
+                double range = Math.sqrt((Math.pow((b.getY() - y), 2) + Math.pow((b.getX() - x), 2)));
+                //if within acceptable angle and within attacking range
+                if((angle - 30 <= theta && theta <= angle + 30) && slashRange >= range){
+                    b.hit(slashDamage);
+                }
+            }
         }
     }
 

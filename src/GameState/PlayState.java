@@ -16,7 +16,7 @@ public class PlayState extends GameState{
 
     private TileMap tileMap;
     private Player player;
-    private ArrayList<Brawler> brawlers;
+    public ArrayList<Brawler> brawlers;
 
 
     private int score = 0;
@@ -45,10 +45,10 @@ public class PlayState extends GameState{
         Brawler b;
         Point[] points = new Point[] {
                 new Point(200, 50),
-                new Point(300,50),
-                new Point(400,50),
-                new Point(500,50),
-                new Point(600,50),
+                new Point(300, 50),
+                new Point(400, 50),
+                new Point(500, 50),
+                new Point(600, 50),
         };
         for(int i = 0; i < points.length; i++){
             b = new Brawler(tileMap);
@@ -62,6 +62,8 @@ public class PlayState extends GameState{
     public void update() {
         //update player
         player.update();
+
+
         //update brawlers
         for(int i = 0; i < brawlers.size(); i++){
             Brawler b = brawlers.get(i);
@@ -72,6 +74,7 @@ public class PlayState extends GameState{
                 i--;
             }
         }
+
         //keeps camera centered on player
         tileMap.setPosition(GamePanel.WIDTH / 2 - player.getX(), GamePanel.HEIGHT / 2 - player.getY());
 
@@ -179,6 +182,8 @@ public class PlayState extends GameState{
     public void mousePressed(int e) {
         if(e == MouseEvent.BUTTON1){
             player.setSlashing(true);
+            //check player attacks
+            player.checkAttack(brawlers);
         }
     }
 
