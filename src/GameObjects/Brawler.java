@@ -41,7 +41,7 @@ public class Brawler extends GameObject {
         }
     }
 
-    public void hit(int damage){
+    public void hit(int damage, double theta){
         if(dead){
             return;
         }

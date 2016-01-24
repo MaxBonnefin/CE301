@@ -58,13 +58,17 @@ public class Player extends GameObject {
             for(int i = 0; i < brawlers.size(); i++){
                 Brawler b = brawlers.get(i);
 
-                double theta = Math.atan((b.getY() - y)/(b.getX() - x));
-
+                double theta = Math.toDegrees(Math.atan2((b.getY() - y) , (b.getX() - x)) - Math.PI/2);
+                if(theta < 0){
+                    theta += 360;
+                }
                 //calculate distance using pythagorean theorem
-                double range = Math.sqrt((Math.pow((b.getY() - y), 2) + Math.pow((b.getX() - x), 2)));
+                double range = Math.sqrt((Math.pow((b.getY()- b.getHeight()/2 - y-height/2), 2) + Math.pow((b.getX() - b.getWidth()/2 - x-width/2), 2)));
                 //if within acceptable angle and within attacking range
-                if((angle - 30 <= theta && theta <= angle + 30) && slashRange >= range){
-                    b.hit(slashDamage);
+                double anglediff = Math.min(Math.abs(angle - theta), 360 - Math.abs(theta));
+                if(anglediff <= 60 && slashRange >= range){
+                    b.hit(slashDamage, theta);
+                    System.out.println("HIT " +anglediff+" " +(angle) +" "+ theta +" "+ range);
                 }
             }
         }
@@ -136,7 +140,11 @@ public class Player extends GameObject {
         }
 
         //update rotation angle
-        angle = Math.atan2(MouseInfo.getPointerInfo().getLocation().getY() - y - yMap - height / 2, MouseInfo.getPointerInfo().getLocation().getX() - x - xMap - width / 2) - Math.PI / 2;
+        angle = Math.atan2(MouseInfo.getPointerInfo().getLocation().getY() - y - yMap - height / 2, MouseInfo.getPointerInfo().getLocation().getX() - x - xMap - width / 2) - Math.PI/2;
+        angle = Math.toDegrees(angle);
+        if(angle < 0){
+            angle += 360;
+        }
 
     }
 
@@ -145,7 +153,7 @@ public class Player extends GameObject {
         AffineTransform reset = g.getTransform();
         AffineTransform trans = new AffineTransform();
         //apply rotation to player sprite
-        trans.rotate(angle, x + xMap, y + yMap);
+        trans.rotate(Math.toRadians(angle), x + xMap, y + yMap);
         //render player
         g.transform(trans);
         g.drawImage(sprite, (int) (x + xMap - width / 2), (int) (y + yMap - height / 2), null);

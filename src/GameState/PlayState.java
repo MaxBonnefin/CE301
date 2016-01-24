@@ -45,7 +45,7 @@ public class PlayState extends GameState{
         Brawler b;
         Point[] points = new Point[] {
                 new Point(200, 50),
-                new Point(300, 50),
+                new Point(300, 150),
                 new Point(400, 50),
                 new Point(500, 50),
                 new Point(600, 50),
