@@ -6,7 +6,6 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.Random;
 
 public class Brawler extends GameObject {
 
@@ -17,7 +16,9 @@ public class Brawler extends GameObject {
     private BufferedImage sword;
     public double angle;
     long time = 0;
-
+    private double hitSpeed;
+    private boolean hit;
+    private double x1, y1;
 
     public Brawler(TileMap tm) {
         super(tm);
@@ -28,6 +29,7 @@ public class Brawler extends GameObject {
 
         moveSpeed = 0.4;
         maxSpeed = 1.8;
+        hitSpeed = 6.0;
         stopSpeed = 0.5;
 
         health = maxHealth = 50;
@@ -41,7 +43,15 @@ public class Brawler extends GameObject {
         }
     }
 
-    public void hit(int damage, double theta){
+    public void calculateKnockback(double theta, int distance){
+        hit = true;
+        //using trigonometry to calculate point from angle
+        x1 = x + distance * Math.cos(theta);
+        y1 = y + distance * Math.sin(theta);
+
+    }
+
+    public void hit(int damage){
         if(dead){
             return;
         }
@@ -52,7 +62,6 @@ public class Brawler extends GameObject {
         if (health == 0){
             dead = true;
         }
-
     }
 
     public void update(){
@@ -87,7 +96,7 @@ public class Brawler extends GameObject {
 
     private void getNextPosition() {
 
-
+    /*
         if(System.nanoTime() - time > 500000000){ //checks if direction has been changed in the past half second
 
             //deciding movement
@@ -147,51 +156,67 @@ public class Brawler extends GameObject {
             time = System.nanoTime();
         }
 
+    */
+        if(hit){
+            if(x <= x1){
+                dx += hitSpeed;
+            }else if(x >= x1){
+                dx -= hitSpeed;
+            }
+            if(y <= y1){
+                dy += hitSpeed;
+            }else if(y >= y1){
+                dy -= hitSpeed;
+            }
 
-        //actual movement
-        if(left){
-            dx -= moveSpeed;
-            if(dx < - maxSpeed){
-                dx = - maxSpeed;
-            }
-        }else if(right){
-            dx += moveSpeed;
-            if(dx > maxSpeed){
-                dx = maxSpeed;
-            }
-        } else{
-            if(dx > 0){
-                dx -= stopSpeed;
-                if(dx < 0){
-                    dx = 0;
-                }
-            }else if(dx < 0){
-                dx += stopSpeed;
-                if(dx > 0){
-                    dx = 0;
-                }
-            }
-        }
-        if(up){
-            dy -= moveSpeed;
-            if(dy < - maxSpeed){
-                dy = - maxSpeed;
-            }
-        }else if(down){
-            dy += moveSpeed;
-            if(dy > maxSpeed){
-                dy = maxSpeed;
-            }
+            hit = false;
+
         }else{
-            if(dy > 0){
-                dy -= stopSpeed;
-                if(dy < 0){
-                    dy = 0;
+            //actual movement
+            if(left){
+                dx -= moveSpeed;
+                if(dx < - maxSpeed){
+                    dx = - maxSpeed;
                 }
-            }else if(dy < 0){
-                dy += stopSpeed;
+            }else if(right){
+                dx += moveSpeed;
+                if(dx > maxSpeed){
+                    dx = maxSpeed;
+                }
+            } else{
+                if(dx > 0){
+                    dx -= stopSpeed;
+                    if(dx < 0){
+                        dx = 0;
+                    }
+                }else if(dx < 0){
+                    dx += stopSpeed;
+                    if(dx > 0){
+                        dx = 0;
+                    }
+                }
+            }
+            if(up){
+                dy -= moveSpeed;
+                if(dy < - maxSpeed){
+                    dy = - maxSpeed;
+                }
+            }else if(down){
+                dy += moveSpeed;
+                if(dy > maxSpeed){
+                    dy = maxSpeed;
+                }
+            }else{
                 if(dy > 0){
-                    dy = 0;
+                    dy -= stopSpeed;
+                    if(dy < 0){
+                        dy = 0;
+                    }
+                }else if(dy < 0){
+                    dy += stopSpeed;
+                    if(dy > 0){
+                        dy = 0;
+                    }
                 }
             }
         }

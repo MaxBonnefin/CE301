@@ -39,7 +39,7 @@ public class Player extends GameObject {
         health = maxHealth = 50;
 
         slashDamage = 10;
-        slashRange = 40;
+        slashRange = 50;
 
         //load sprites
         try{
@@ -63,12 +63,12 @@ public class Player extends GameObject {
                     theta += 360;
                 }
                 //calculate distance using pythagorean theorem
-                double range = Math.sqrt((Math.pow((b.getY()- b.getHeight()/2 - y-height/2), 2) + Math.pow((b.getX() - b.getWidth()/2 - x-width/2), 2)));
+                double range = Math.sqrt((Math.pow((b.getY() - y), 2) + Math.pow((b.getX()  - x), 2)));
                 //if within acceptable angle and within attacking range
                 double anglediff = Math.min(Math.abs(angle - theta), 360 - Math.abs(theta));
-                if(anglediff <= 60 && slashRange >= range){
-                    b.hit(slashDamage, theta);
-                    System.out.println("HIT " +anglediff+" " +(angle) +" "+ theta +" "+ range);
+                if(anglediff <= 45  && slashRange >= range){
+                    b.calculateKnockback(angle,60);
+                    b.hit(slashDamage);
                 }
             }
         }
