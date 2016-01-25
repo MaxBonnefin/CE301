@@ -25,6 +25,9 @@ public class Player extends GameObject {
     private int slashDamage;
     private int slashRange;
 
+    //lunge attack
+    private boolean lunging;
+
     public Player(TileMap tm) {
         super(tm);
         width = 50;
@@ -53,7 +56,7 @@ public class Player extends GameObject {
     public void checkAttack(ArrayList<Brawler> brawlers){
 
         //check slash
-        if(slashing){
+        if(slashing||lunging){
 
             for(int i = 0; i < brawlers.size(); i++){
                 Brawler b = brawlers.get(i);
@@ -72,6 +75,7 @@ public class Player extends GameObject {
                 }
             }
         }
+
     }
 
     private void getNextPosition(){
@@ -158,7 +162,7 @@ public class Player extends GameObject {
         g.transform(trans);
         g.drawImage(sprite, (int) (x + xMap - width / 2), (int) (y + yMap - height / 2), null);
 
-        if(slashing){
+        if(slashing||lunging){
             g.drawImage(sword, (int) ((x + xMap - 50 / 2)), (int) ((y + yMap - 20 / 2)), null);
         }
         //reset transform
@@ -176,7 +180,10 @@ public class Player extends GameObject {
             slashing = b;
         }
     }
-
+    public void setLunging(boolean b){
+        setDodging(true);
+        lunging = b;
+    }
     @Override
     public void setDodging(boolean b){
         if(System.nanoTime() - time > 500000000){
