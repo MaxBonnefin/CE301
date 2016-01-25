@@ -190,6 +190,9 @@ public class PlayState extends GameState{
             //check player attacks
             player.checkAttack(brawlers);
         }
+        if(e == MouseEvent.BUTTON3){
+            player.setParrying(true);
+        }
     }
 
     @Override
@@ -199,6 +202,9 @@ public class PlayState extends GameState{
         }
         if(e == MouseEvent.BUTTON2){
             player.setLunging(false);
+        }
+        if(e == MouseEvent.BUTTON3){
+            player.setParrying(false);
         }
     }
 

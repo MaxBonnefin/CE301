@@ -15,6 +15,8 @@ public class Player extends GameObject {
     private boolean dead;
     private BufferedImage sprite;
     private BufferedImage sword;
+    private BufferedImage parrysword;
+
     public double angle;
 
     private long dodgeTime = 0;
@@ -27,6 +29,9 @@ public class Player extends GameObject {
 
     //lunge attack
     private boolean lunging;
+
+    //parrying
+    private boolean parrying;
 
     public Player(TileMap tm) {
         super(tm);
@@ -48,6 +53,8 @@ public class Player extends GameObject {
         try{
             sprite = ImageIO.read(getClass().getResourceAsStream("/Sprites/player.png"));
             sword = ImageIO.read(getClass().getResourceAsStream("/Sprites/sword.png"));
+            parrysword = ImageIO.read(getClass().getResourceAsStream("/Sprites/parrysword.png"));
+
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -165,6 +172,9 @@ public class Player extends GameObject {
         if(slashing||lunging){
             g.drawImage(sword, (int) ((x + xMap - 50 / 2)), (int) ((y + yMap - 20 / 2)), null);
         }
+        if(parrying){
+            g.drawImage(parrysword, (int) ((x + xMap - 50 / 2)), (int) ((y + yMap - 20 / 2)), null);
+        }
         //reset transform
         g.setTransform(reset);
     }
@@ -176,14 +186,22 @@ public class Player extends GameObject {
         return maxHealth;
     }
     public void setSlashing(boolean b){
-        if(!dodging){
+        if(!dodging && !lunging && !parrying){
             slashing = b;
         }
     }
     public void setLunging(boolean b){
-        setDodging(true);
-        lunging = b;
+        if(!slashing && !parrying){
+            setDodging(true);
+            lunging = b;
+        }
     }
+    public void setParrying(boolean b){
+        if(!dodging && !slashing && !lunging){
+            parrying = b;
+        }
+    }
+
     @Override
     public void setDodging(boolean b){
         if(System.nanoTime() - time > 500000000){
