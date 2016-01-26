@@ -35,6 +35,7 @@ public class PlayState extends GameState{
         tileMap = new TileMap(50); //TODO get proper tileset
         tileMap.loadTiles("/Tilesets/tileset.png");
         tileMap.loadMap("/Maps/map1.map");
+
         tileMap.setPosition(0,0);
 
         player = new Player(tileMap);
@@ -58,10 +59,10 @@ public class PlayState extends GameState{
             for(int i = 0; i < 5; i++){
                 int rx, ry;
 
-                rx = rand.nextInt(tileMap.getNumRows()*tileMap.getTileSize());
-                ry = rand.nextInt(tileMap.getNumCols()*tileMap.getTileSize());
+                rx = rand.nextInt(tileMap.getNumRows()*tileMap.getTileSize()-tileMap.getTileSize());
+                ry = rand.nextInt(tileMap.getNumCols()*tileMap.getTileSize()-tileMap.getTileSize());
 
-                while(tileMap.getType(rx/tileMap.getTileSize(), ry/tileMap.getTileSize()) == 1){
+                while(tileMap.getType(rx/tileMap.getTileSize(), ry/tileMap.getTileSize()) == 1 || rx <= tileMap.getTileSize() || ry <= tileMap.getTileSize() || rx >= tileMap.getNumRows()*tileMap.getTileSize()-tileMap.getTileSize() || ry >= rand.nextInt(tileMap.getNumCols()*tileMap.getTileSize()-tileMap.getTileSize())){
                     rx = rand.nextInt(tileMap.getNumRows()*tileMap.getTileSize());
                     ry = rand.nextInt(tileMap.getNumCols()*tileMap.getTileSize());
                 }
@@ -79,7 +80,6 @@ public class PlayState extends GameState{
     }
     @Override
     public void update() {
-        System.out.println(brawlers.size());
 
         //update player
         player.update();
