@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 public class Game {
 
     public static void main(String[] args){
-        JFrame window = new JFrame("STB spr4");
+        JFrame window = new JFrame("STB spr8");
         window.setContentPane(new GamePanel());
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);

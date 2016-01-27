@@ -23,6 +23,17 @@ public class PlayState extends GameState{
     private int wave = 0;
     private int lastHealth;
 
+    private int lastKey = 0;
+    private final static int W = KeyEvent.VK_W;
+    private long lastWPress = System.currentTimeMillis();
+    private final static int A = KeyEvent.VK_A;
+    private long lastAPress = System.currentTimeMillis();
+    private final static int S = KeyEvent.VK_S;
+    private long lastSPress = System.currentTimeMillis();
+    private final static int D = KeyEvent.VK_D;
+    private long lastDPress = System.currentTimeMillis();
+    private final static int limit = 250;
+
 
     public PlayState(GameStateManager gsm){
         this.gsm = gsm;
@@ -126,6 +137,8 @@ public class PlayState extends GameState{
         }
 
         lastHealth = player.getHealth();
+
+
     }
 
     @Override
@@ -159,22 +172,33 @@ public class PlayState extends GameState{
 
     @Override
     public void keyPressed(int k) {
+
         //player controls
         if(k == KeyEvent.VK_W){
             player.setUp(true);
+            if(System.currentTimeMillis() - lastWPress < limit && lastKey == KeyEvent.VK_W){
+                player.setDodging(true);
+            }
         }
         if(k == KeyEvent.VK_A){
             player.setLeft(true);
+            if(System.currentTimeMillis() - lastAPress < limit && lastKey == KeyEvent.VK_A){
+                player.setDodging(true);
+            }
         }
         if(k == KeyEvent.VK_S){
             player.setDown(true);
+            if(System.currentTimeMillis() - lastSPress < limit && lastKey == KeyEvent.VK_S){
+                player.setDodging(true);
+            }
         }
         if(k == KeyEvent.VK_D){
             player.setRight(true);
+            if(System.currentTimeMillis() - lastDPress < limit && lastKey == KeyEvent.VK_D){
+                player.setDodging(true);
+            }
         }
-        if(k == KeyEvent.VK_SHIFT){
-            player.setDodging(true);
-        }
+
         //saving game
         if(k == KeyEvent.VK_F5){
             try{
@@ -197,22 +221,23 @@ public class PlayState extends GameState{
     public void keyReleased(int k) {
         if(k == KeyEvent.VK_W){
             player.setUp(false);
+            lastWPress = System.currentTimeMillis();
+            lastKey = KeyEvent.VK_W;
         }
         if(k == KeyEvent.VK_A){
             player.setLeft(false);
+            lastAPress = System.currentTimeMillis();
+            lastKey = KeyEvent.VK_A;
         }
         if(k == KeyEvent.VK_S){
             player.setDown(false);
+            lastSPress = System.currentTimeMillis();
+            lastKey = KeyEvent.VK_S;
         }
         if(k == KeyEvent.VK_D){
             player.setRight(false);
-        }
-
-        if(k == KeyEvent.VK_SPACE){
-            player.setSlashing(false);
-        }
-        if(k == KeyEvent.VK_SHIFT){
-            player.setDodging(false);
+            lastDPress = System.currentTimeMillis();
+            lastKey = KeyEvent.VK_D;
         }
     }
 

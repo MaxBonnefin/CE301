@@ -204,19 +204,15 @@ public class Player extends GameObject {
 
     @Override
     public void setDodging(boolean b){
-        if(System.nanoTime() - time > 500000000){
-            dodging = b;
-            if(dodging){
-                moveSpeed = 0.8;
-                maxSpeed = 9;
-                dodgeTime = System.nanoTime();
-            }else if(!dodging){
-                moveSpeed = 0.4;
-                maxSpeed = 1.8;
-            }
-            time = System.nanoTime();
+        dodging = b;
+        if(dodging){
+            moveSpeed = 1.2;
+            maxSpeed = 9;
+            dodgeTime = System.nanoTime();
+        }else if(!dodging){
+            moveSpeed = 0.4;
+            maxSpeed = 1.8;
         }
     }
-
 
 }

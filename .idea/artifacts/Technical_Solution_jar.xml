@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Technical Solution:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Technical_Solution_jar</output-path>
+    <root id="archive" name="Technical Solution.jar">
+      <element id="module-output" name="Technical Solution" />
+    </root>
+  </artifact>
+</component>
