@@ -1,6 +1,7 @@
 package GameState;
 
 import GameObjects.Brawler;
+import GameObjects.PickUp;
 import GameObjects.Player;
 import Main.GamePanel;
 import TileMap.TileMap;
@@ -18,11 +19,15 @@ public class PlayState extends GameState{
     private TileMap tileMap;
     private Player player;
     public ArrayList<Brawler> brawlers;
+    public ArrayList<PickUp> pickups;
+
+    private PickUp pickUp;
 
     private int score = 0;
     private int wave = 0;
     private int lastHealth;
 
+    //double-tap variables
     private int lastKey = 0;
     private final static int W = KeyEvent.VK_W;
     private long lastWPress = System.currentTimeMillis();
@@ -53,6 +58,11 @@ public class PlayState extends GameState{
         player.setPosition(100,100);
 
         populateBrawlers();
+
+        pickups = new ArrayList<PickUp>();
+        pickUp = new PickUp(tileMap);
+        pickups.add(pickUp);
+        pickUp.setPosition(200,200);
 
     }
 
@@ -98,6 +108,28 @@ public class PlayState extends GameState{
         //keeps camera centered on player
         tileMap.setPosition(GamePanel.WIDTH / 2 - player.getX(), GamePanel.HEIGHT / 2 - player.getY());
 
+        //check pickups
+        for(int i = 0; i < pickups.size(); i++){
+            if(player.getHealth() < player.getMaxHealth()){
+                if(pickups.get(i).intersects(player)){
+                    pickups.get(i).activate(player);
+                    pickups.remove(i);
+                }
+            }
+        }
+
+
+        //update brawlers
+        for(int i = 0; i < brawlers.size(); i++){
+            Brawler b = brawlers.get(i);
+            b.update();
+            if(b.isDead()){
+                brawlers.remove(i);
+                score += 10;
+                i--;
+            }
+        }
+
         //new wave
         Random rand = new Random();
 
@@ -120,17 +152,6 @@ public class PlayState extends GameState{
             player.setPosition(100,100);
         }
 
-        //update brawlers
-        for(int i = 0; i < brawlers.size(); i++){
-            Brawler b = brawlers.get(i);
-            b.update();
-            if(b.isDead()){
-                brawlers.remove(i);
-                score += 10;
-                i--;
-            }
-        }
-
         //update score
         if(player.getHealth()< lastHealth){
             score--;
@@ -150,6 +171,11 @@ public class PlayState extends GameState{
         //render tilemap
         tileMap.render(g);
 
+        //render pickups
+        for (int i = 0; i < pickups.size(); i++) {
+            pickups.get(i).render(g);
+        }
+
         //render brawlers
         for (int i = 0; i < brawlers.size(); i++) {
             brawlers.get(i).render(g);
@@ -157,6 +183,8 @@ public class PlayState extends GameState{
 
         //render player
         player.render(g);
+
+
 
         //render hud
         Font font;

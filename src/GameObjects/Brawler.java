@@ -96,67 +96,6 @@ public class Brawler extends GameObject {
 
     private void getNextPosition() {
 
-    /*
-        if(System.nanoTime() - time > 500000000){ //checks if direction has been changed in the past half second
-
-            //deciding movement
-            Random rand = new Random();
-            int r = rand.nextInt(8);
-
-            if(r == 0){
-                //left
-                right = false;
-                up = false;
-                down = false;
-                left = true;
-            }else if(r == 1){
-                //right
-                left = false;
-                up = false;
-                down = false;
-                right = true;
-            }else if(r == 2){
-                //up
-                left = false;
-                right = false;
-                down = false;
-                up = true;
-            }else if(r == 3){
-                //down
-                left = false;
-                right = false;
-                up = false;
-                down = true;
-            }else if(r == 4){
-                //up & left
-                right = false;
-                down = false;
-                up = true;
-                left = true;
-            }else if(r == 5){
-                //up & right
-                left = false;
-                down = false;
-                right = true;
-                up = true;
-            }else if(r == 6){
-                //left & down
-                right = false;
-                up = false;
-                left = true;
-                down = true;
-            }
-            else if(r == 7){
-                //right & down
-                right = false;
-                up = false;
-                right = true;
-                down = true;
-            }
-            time = System.nanoTime();
-        }
-
-    */
         if(hit){
             if(x <= x1){
                 dx += hitSpeed;

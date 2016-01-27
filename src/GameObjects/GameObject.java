@@ -1,8 +1,7 @@
 package GameObjects;
 import Main.GamePanel;
-import TileMap.*;
-
-import java.awt.*;
+import TileMap.Tile;
+import TileMap.TileMap;
 
 public abstract class GameObject {
 
@@ -43,9 +42,8 @@ public abstract class GameObject {
     }
 
     public boolean intersects(GameObject other){
-        Rectangle rect1 = new Rectangle((int)x - collisionWidth, (int)x - collisionHeight, collisionWidth, collisionHeight);
-        Rectangle rect2 = new Rectangle((int)other.x - other.collisionWidth, (int)other.x - other.collisionHeight, other.collisionWidth, other.collisionHeight);
-        return rect1.intersects(rect2);
+
+        return x < other.x + other.width && x + width > other.x && y < other.y + other.height && y + height > other.y;
 
     }
 

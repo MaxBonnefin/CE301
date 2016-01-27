@@ -45,7 +45,7 @@ public class Player extends GameObject {
         stopSpeed = 0.5;
 
         health = maxHealth = 50;
-
+        health -= 20;
         slashDamage = 10;
         slashRange = 50;
 
@@ -82,7 +82,6 @@ public class Player extends GameObject {
                 }
             }
         }
-
     }
 
     private void getNextPosition(){
@@ -142,6 +141,11 @@ public class Player extends GameObject {
         checkObstacleCollision();
         setPosition(xTemp, yTemp);
 
+        //update health
+        if(health > maxHealth){
+            health = maxHealth;
+        }
+
         //update dodging
         long newTime = System.nanoTime();
         if(dodging && newTime >= (dodgeTime + 125000000)){
@@ -181,6 +185,9 @@ public class Player extends GameObject {
 
     public int getHealth(){
         return health;
+    }
+    public void setHealth(int h){
+        health = h;
     }
     public int getMaxHealth(){
         return maxHealth;
