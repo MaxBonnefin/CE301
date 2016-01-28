@@ -45,7 +45,6 @@ public class Player extends GameObject {
         stopSpeed = 0.5;
 
         health = maxHealth = 50;
-        health -= 20;
         slashDamage = 10;
         slashRange = 50;
 
@@ -171,7 +170,6 @@ public class Player extends GameObject {
         trans.rotate(Math.toRadians(angle), x + xMap, y + yMap);
         //render player
         g.transform(trans);
-        g.drawImage(sprite, (int) (x + xMap - width / 2), (int) (y + yMap - height / 2), null);
 
         if(slashing||lunging){
             g.drawImage(sword, (int) ((x + xMap - 50 / 2)), (int) ((y + yMap - 20 / 2)), null);
@@ -179,6 +177,9 @@ public class Player extends GameObject {
         if(parrying){
             g.drawImage(parrysword, (int) ((x + xMap - 50 / 2)), (int) ((y + yMap - 20 / 2)), null);
         }
+
+        g.drawImage(sprite, (int) (x + xMap - width / 2), (int) (y + yMap - height / 2), null);
+
         //reset transform
         g.setTransform(reset);
     }

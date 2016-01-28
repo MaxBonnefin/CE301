@@ -129,6 +129,7 @@ public class PlayState extends GameState{
                 i--;
             }
         }
+        System.out.println(brawlers.size());
 
         //new wave
         Random rand = new Random();
