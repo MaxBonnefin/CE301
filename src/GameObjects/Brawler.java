@@ -170,6 +170,8 @@ public class Brawler extends GameObject {
         //render brawler
         g.transform(trans);
         g.drawImage(sprite, (int) (x + xMap - width / 2), (int) (y + yMap - height / 2), null);
+        g.drawString((x + ", "+ y),(int)(x + xMap),(int)(y + yMap));
+
         //reset transform
         g.setTransform(reset);
     }

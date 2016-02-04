@@ -24,7 +24,7 @@ public class PlayState extends GameState{
     private PickUp pickUp;
 
     private int score = 0;
-    private int wave = 0;
+    private int wave = 1;
     private int lastHealth;
 
     //double-tap variables
@@ -39,6 +39,8 @@ public class PlayState extends GameState{
     private long lastDPress = System.currentTimeMillis();
     private final static int limit = 250;
 
+    private long timer = System.currentTimeMillis();
+    private int map = 1;
 
     public PlayState(GameStateManager gsm){
         this.gsm = gsm;
@@ -48,7 +50,7 @@ public class PlayState extends GameState{
     @Override
     public void init() {
 
-        tileMap = new TileMap(50); //TODO get proper tileset
+        tileMap = new TileMap(50);
         tileMap.loadTiles("/Tilesets/tileset.png");
         tileMap.loadMap("/Maps/map1.map");
 
@@ -57,50 +59,80 @@ public class PlayState extends GameState{
         player = new Player(tileMap);
         player.setPosition(100,100);
 
-        populateBrawlers();
-
         pickups = new ArrayList<PickUp>();
         pickUp = new PickUp(tileMap);
         pickups.add(pickUp);
         pickUp.setPosition(200,200);
 
+        brawlers = new ArrayList<Brawler>();
+
+        populateBrawlers();
     }
 
     private void populateBrawlers() {
-        brawlers = new ArrayList<Brawler>();
+        ArrayList<Point> points = new ArrayList<Point>();
 
         if(brawlers.isEmpty()){
             Brawler b;
 
-            ArrayList<Point> points = new ArrayList<Point>();
-            points.clear();
 
             Random rand = new Random();
 
             for(int i = 0; i < 5; i++){
                 int rx, ry;
 
-                rx = rand.nextInt(tileMap.getNumRows()*tileMap.getTileSize()-tileMap.getTileSize());
-                ry = rand.nextInt(tileMap.getNumCols()*tileMap.getTileSize()-tileMap.getTileSize());
+                rx = rand.nextInt(tileMap.getNumCols());
+                ry = rand.nextInt(tileMap.getNumRows());
+                System.out.println(String.valueOf(tileMap.getNumCols() + " " + String.valueOf(tileMap.getNumRows()) ));
 
-                while(tileMap.getType(rx/tileMap.getTileSize(), ry/tileMap.getTileSize()) == 1 || rx <= tileMap.getTileSize() || ry <= tileMap.getTileSize() || rx >= tileMap.getNumRows()*tileMap.getTileSize()-tileMap.getTileSize() || ry >= rand.nextInt(tileMap.getNumCols()*tileMap.getTileSize()-tileMap.getTileSize())){
-                    rx = rand.nextInt(tileMap.getNumRows()*tileMap.getTileSize());
-                    ry = rand.nextInt(tileMap.getNumCols()*tileMap.getTileSize());
+                while(tileMap.getType(ry, rx) != 0){
+                    Random r = new Random();
+
+                    rx = r.nextInt(tileMap.getNumCols());
+                    ry = r.nextInt(tileMap.getNumRows());
                 }
-                points.add(new Point(rx, ry));
+                points.add(new Point(rx * tileMap.getTileSize(), ry * tileMap.getTileSize()));
+
             }
+
 
             for(int i = 0; i < points.size(); i++) {
-                if(brawlers.size() < 5){
-                    b = new Brawler(tileMap);
-                    b.setPosition(points.get(i).x, points.get(i).y);
-                    brawlers.add(b);
-                }
+                b = new Brawler(tileMap);
+                b.setPosition(points.get(i).x, points.get(i).y);
+                brawlers.add(b);
             }
         }
+        points.clear();
+
     }
     @Override
     public void update() {
+        //System.out.println(brawlers.size());
+        //new wave
+        Random rand = new Random();
+
+        if(brawlers.isEmpty()&& System.currentTimeMillis() > timer + 2000){
+            wave++;
+            score += 100;
+            int r = rand.nextInt(2);
+            if(r == 0){
+                tileMap.reset(50);
+                tileMap.loadTiles("/Tilesets/tileset.png");
+                tileMap.loadMap("/Maps/map1.map");
+                tileMap.setPosition(0,0);
+                populateBrawlers();
+            }
+            if(r == 1){
+                tileMap.reset(50);
+                tileMap.loadTiles("/Tilesets/tileset.png");
+                tileMap.loadMap("/Maps/map2.map");
+                tileMap.setPosition(0,0);
+                populateBrawlers();
+            }
+            player.setPosition(100,100);
+
+        }
+
 
         //update player
         player.update();
@@ -118,7 +150,6 @@ public class PlayState extends GameState{
             }
         }
 
-
         //update brawlers
         for(int i = 0; i < brawlers.size(); i++){
             Brawler b = brawlers.get(i);
@@ -129,29 +160,6 @@ public class PlayState extends GameState{
                 i--;
             }
         }
-        System.out.println(brawlers.size());
-
-        //new wave
-        Random rand = new Random();
-
-        if(brawlers.isEmpty()){
-            wave++;
-            if(wave!=1){
-                score += 100;
-                int r = rand.nextInt(2);
-                if(r == 0){
-                    tileMap.loadMap("/Maps/map1.map");
-                    populateBrawlers();
-                    tileMap.setPosition(0,0);
-                }
-                if(r == 1){
-                    tileMap.loadMap("/Maps/map2.map");
-                    populateBrawlers();
-                    tileMap.setPosition(0,0);
-                }
-            }
-            player.setPosition(100,100);
-        }
 
         //update score
         if(player.getHealth()< lastHealth){
@@ -159,7 +167,6 @@ public class PlayState extends GameState{
         }
 
         lastHealth = player.getHealth();
-
 
     }
 
@@ -184,8 +191,6 @@ public class PlayState extends GameState{
 
         //render player
         player.render(g);
-
-
 
         //render hud
         Font font;
@@ -225,6 +230,14 @@ public class PlayState extends GameState{
             player.setRight(true);
             if(System.currentTimeMillis() - lastDPress < limit && lastKey == KeyEvent.VK_D){
                 player.setDodging(true);
+            }
+        }
+        //TODO cheats
+        if(k == KeyEvent.VK_M){
+            for(int i = 0; i < brawlers.size(); i++){
+                Brawler b = brawlers.get(i);
+                brawlers.remove(i);
+                i--;
             }
         }
 

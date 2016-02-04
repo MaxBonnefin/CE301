@@ -33,6 +33,30 @@ public class TileMap {
     private int rowsToDraw, colsToDraw;
 
     public TileMap(int tileSize){
+        reset(tileSize);
+    }
+
+    //reset tilemap
+    public void reset(int tileSize){
+        x = 0;
+        y = 0;
+        xMin = 0;
+        yMin = 0;
+        xMax = 0;
+        yMax = 0;
+        map = null;
+        numRows = 0;
+        numCols = 0;
+        width = 0;
+        height = 0;
+        tileset = null;
+        tilesAcross = 0;
+        tiles = null;
+        rowOffset = 0;
+        colOffset = 0;
+        rowsToDraw = 0;
+        colsToDraw = 0;
+
         this.tileSize = tileSize;
         rowsToDraw = GamePanel.HEIGHT / tileSize + 3; //extra 3 is just for padding
         colsToDraw = GamePanel.WIDTH / tileSize + 3;
@@ -157,6 +181,7 @@ public class TileMap {
                     int r = rc / tilesAcross;
                     int c = rc % tilesAcross;
                     g.drawImage(tiles[r][c].getImage(), (int)x + (col * tileSize), (int)y + (row * tileSize), null);
+                    g.drawString(String.valueOf(tiles[r][c].getType()),(int)x + (col * tileSize) +25,(int)y + (row * tileSize)+25);
                 }
         }
     }
