@@ -96,6 +96,7 @@ public class Brawler extends GameObject {
 
     private void getNextPosition() {
 
+        //attack knockback
         if(hit){
             if(x <= x1){
                 dx += hitSpeed;
@@ -111,6 +112,7 @@ public class Brawler extends GameObject {
             hit = false;
 
         }else{
+
             //actual movement
             if(left){
                 dx -= moveSpeed;
@@ -170,7 +172,9 @@ public class Brawler extends GameObject {
         //render brawler
         g.transform(trans);
         g.drawImage(sprite, (int) (x + xMap - width / 2), (int) (y + yMap - height / 2), null);
-        g.drawString((x + ", "+ y),(int)(x + xMap),(int)(y + yMap));
+
+        //DEBUG TEXT
+        //g.drawString((x + ", "+ y),(int)(x + xMap),(int)(y + yMap));
 
         //reset transform
         g.setTransform(reset);

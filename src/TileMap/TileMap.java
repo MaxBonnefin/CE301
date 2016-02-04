@@ -181,7 +181,8 @@ public class TileMap {
                     int r = rc / tilesAcross;
                     int c = rc % tilesAcross;
                     g.drawImage(tiles[r][c].getImage(), (int)x + (col * tileSize), (int)y + (row * tileSize), null);
-                    g.drawString(String.valueOf(tiles[r][c].getType()),(int)x + (col * tileSize) +25,(int)y + (row * tileSize)+25);
+                    //DEBUG TEXT
+                    //g.drawString(String.valueOf(tiles[r][c].getType()),(int)x + (col * tileSize) +25,(int)y + (row * tileSize)+25);
                 }
         }
     }

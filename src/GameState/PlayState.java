@@ -78,12 +78,13 @@ public class PlayState extends GameState{
 
             Random rand = new Random();
 
-            for(int i = 0; i < 5; i++){
+            int numBrawlers = rand.nextInt((25 - 15) + 1) + 15;
+
+            for(int i = 0; i < numBrawlers; i++){
                 int rx, ry;
 
                 rx = rand.nextInt(tileMap.getNumCols());
                 ry = rand.nextInt(tileMap.getNumRows());
-                System.out.println(String.valueOf(tileMap.getNumCols() + " " + String.valueOf(tileMap.getNumRows()) ));
 
                 while(tileMap.getType(ry, rx) != 0){
                     Random r = new Random();
@@ -91,8 +92,7 @@ public class PlayState extends GameState{
                     rx = r.nextInt(tileMap.getNumCols());
                     ry = r.nextInt(tileMap.getNumRows());
                 }
-                points.add(new Point(rx * tileMap.getTileSize(), ry * tileMap.getTileSize()));
-
+                points.add(new Point(rx * tileMap.getTileSize() + tileMap.getTileSize() / 2, ry * tileMap.getTileSize() + tileMap.getTileSize() / 2));
             }
 
 
@@ -107,7 +107,6 @@ public class PlayState extends GameState{
     }
     @Override
     public void update() {
-        //System.out.println(brawlers.size());
         //new wave
         Random rand = new Random();
 
@@ -121,6 +120,7 @@ public class PlayState extends GameState{
                 tileMap.loadMap("/Maps/map1.map");
                 tileMap.setPosition(0,0);
                 populateBrawlers();
+                player.setPosition(100,100);
             }
             if(r == 1){
                 tileMap.reset(50);
@@ -128,8 +128,8 @@ public class PlayState extends GameState{
                 tileMap.loadMap("/Maps/map2.map");
                 tileMap.setPosition(0,0);
                 populateBrawlers();
+                player.setPosition(75,75);
             }
-            player.setPosition(100,100);
 
         }
 

@@ -29,7 +29,8 @@ public class Player extends GameObject {
 
     //lunge attack
     private boolean lunging;
-
+    private int lungeDamage;
+    private int lungeRange;
     //parrying
     private boolean parrying;
 
@@ -48,6 +49,9 @@ public class Player extends GameObject {
         slashDamage = 10;
         slashRange = 50;
 
+        lungeDamage = 20;
+        lungeRange = 60;
+        
         //load sprites
         try{
             sprite = ImageIO.read(getClass().getResourceAsStream("/Sprites/player.png"));
@@ -75,9 +79,17 @@ public class Player extends GameObject {
                 double range = Math.sqrt((Math.pow((b.getY() - y), 2) + Math.pow((b.getX()  - x), 2)));
                 //if within acceptable angle and within attacking range
                 double anglediff = Math.min(Math.abs(angle - theta), 360 - Math.abs(theta));
-                if(anglediff <= 45  && slashRange >= range){
-                    b.calculateKnockback(angle,60);
-                    b.hit(slashDamage);
+                if(slashing){
+                    if(anglediff <= 45  && slashRange >= range){
+                        b.calculateKnockback(angle,60);
+                        b.hit(slashDamage);
+                    }
+                }
+                if(lunging){
+                    if(anglediff <= 45  && lungeRange >= range){
+                        b.calculateKnockback(angle,60);
+                        b.hit(lungeDamage);
+                    }
                 }
             }
         }
@@ -179,7 +191,6 @@ public class Player extends GameObject {
         }
 
         g.drawImage(sprite, (int) (x + xMap - width / 2), (int) (y + yMap - height / 2), null);
-
         //reset transform
         g.setTransform(reset);
     }
