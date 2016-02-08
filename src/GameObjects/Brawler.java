@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class Brawler extends GameObject {
 
@@ -19,6 +20,7 @@ public class Brawler extends GameObject {
     private double hitSpeed;
     private boolean hit;
     private double x1, y1;
+    public Point target;
 
     public Brawler(TileMap tm) {
         super(tm);
@@ -41,6 +43,7 @@ public class Brawler extends GameObject {
         }catch(Exception e){
             e.printStackTrace();
         }
+        getTarget();
     }
 
     public void calculateKnockback(double theta, int distance){
@@ -66,32 +69,33 @@ public class Brawler extends GameObject {
 
     public void update(){
         //update position
+        //getNextLocation();
         getNextPosition();
         checkObstacleCollision();
         setPosition(xTemp, yTemp);
 
-        //update rotation angle (currently only the 8 cardinal directions)
-        if(left){
-            if(up){
-                angle = 3 * Math.PI / 4;
-            }else if(down){
-                angle = Math.PI / 4;
-            }else{
-                angle = Math.PI / 2;
-            }
-        }else if(right){
-            if(up){
-                angle = 5 * Math.PI / 4;
-            }else if(down){
-                angle = 7 * Math.PI / 4;
-            }else{
-                angle = 3 * Math.PI / 2;
-            }
-        }else if(up){
-            angle = Math.PI;
-        }else if(down){
-            angle =  2 * Math.PI;
+        //update rotation angle
+        angle = Math.toDegrees(Math.atan2(target.y - this.y, target.x - this.x)- Math.PI/2);
+        if(angle < 0){
+            angle += 360;
         }
+    }
+
+    public Point getTarget(){
+        Random rand = new Random();
+        int rx, ry;
+
+        rx = rand.nextInt(tileMap.getNumCols());
+        ry = rand.nextInt(tileMap.getNumRows());
+
+        while(tileMap.getType(ry, rx) != 0){
+            Random r = new Random();
+
+            rx = r.nextInt(tileMap.getNumCols());
+            ry = r.nextInt(tileMap.getNumRows());
+        }
+
+        return target = new Point(rx * tileMap.getTileSize() + tileMap.getTileSize() / 2,ry * tileMap.getTileSize() + tileMap.getTileSize() / 2);
     }
 
     private void getNextPosition() {
@@ -112,7 +116,6 @@ public class Brawler extends GameObject {
             hit = false;
 
         }else{
-
             //actual movement
             if(left){
                 dx -= moveSpeed;
@@ -160,6 +163,34 @@ public class Brawler extends GameObject {
                     }
                 }
             }
+
+            if(target.x > x){
+                left = false;
+                right = true;
+            }
+            if(target.x < x){
+                right = false;
+                left = true;
+            }
+            if(x > target.x - 1 && x < target.x + 1){
+                left = false;
+                right = false;
+            }
+            if(target.y > y){
+                up = false;
+                down = true;
+            }
+            if(target.y < y){
+                down = false;
+                up = true;
+            }
+            if(y > target.y - 1 && y < target.y + 1){
+                up = false;
+                down = false;
+            }
+            if(!up && !down && !left && !right){
+                getTarget();
+            }
         }
     }
 
@@ -168,7 +199,7 @@ public class Brawler extends GameObject {
         AffineTransform reset = g.getTransform();
         AffineTransform trans = new AffineTransform();
         //apply rotation to brawler sprite
-        trans.rotate(angle, x + xMap, y + yMap);
+        trans.rotate(Math.toRadians(angle), x + xMap, y + yMap);
         //render brawler
         g.transform(trans);
         g.drawImage(sprite, (int) (x + xMap - width / 2), (int) (y + yMap - height / 2), null);
@@ -178,6 +209,9 @@ public class Brawler extends GameObject {
 
         //reset transform
         g.setTransform(reset);
+
+        //target
+        g.drawOval((int)(target.x + xMap - width / 2), (int)(target.y + yMap - height / 2), tileMap.getTileSize(), tileMap.getTileSize());
     }
 
     public int getHealth(){

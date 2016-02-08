@@ -51,7 +51,7 @@ public class Player extends GameObject {
 
         lungeDamage = 20;
         lungeRange = 60;
-        
+
         //load sprites
         try{
             sprite = ImageIO.read(getClass().getResourceAsStream("/Sprites/player.png"));
