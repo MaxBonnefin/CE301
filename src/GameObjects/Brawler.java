@@ -46,7 +46,7 @@ public class Brawler extends GameObject {
 
         //load sprites
         try{
-            sprite = ImageIO.read(getClass().getResourceAsStream("/Sprites/brawler.png"));
+            sprite = ImageIO.read(getClass().getResourceAsStream("/Sprites/brawlertrim.png"));
             sword = ImageIO.read(getClass().getResourceAsStream("/Sprites/sword.png"));
         }catch(Exception e){
             e.printStackTrace();
@@ -58,6 +58,8 @@ public class Brawler extends GameObject {
     }
 
     public ArrayList findPath(){
+        openList = new ArrayList<Point>();
+        closedList = new ArrayList<Point>();
        //path found by implementing A* algorithm
         Point startPos = new Point((int)x,(int)y);
         openList.add(startPos); // add original position to the open list
@@ -85,7 +87,6 @@ public class Brawler extends GameObject {
 
             if (closedList.contains(destination)) {
                 //found path
-                getTarget();
                 break;
             }
 
@@ -121,6 +122,9 @@ public class Brawler extends GameObject {
                     continue;
                 }
                 if(!openList.contains(adjTiles.get(i))){
+                    double newg = loops * tileSize;
+                    double newh = Math.sqrt(Math.pow((destination.x - adjTiles.get(i).x), 2) + Math.pow((destination.y - adjTiles.get(i).y), 2));
+                    double newf = newg + newh;
                     openList.add(adjTiles.get(i));
                 }else{
 
@@ -227,6 +231,9 @@ public class Brawler extends GameObject {
 
             //direction selection
 
+            if(!up && !down && !left && !right){
+                getTarget();
+            }
             if(target.x > x){
                 left = false;
                 right = true;
@@ -235,7 +242,7 @@ public class Brawler extends GameObject {
                 right = false;
                 left = true;
             }
-            if(x > target.x - tileSize/4 && x < target.x + tileSize/4){
+            if(x > target.x - tileSize/16 && x < target.x + tileSize/16){
                 left = false;
                 right = false;
             }
@@ -247,13 +254,11 @@ public class Brawler extends GameObject {
                 down = false;
                 up = true;
             }
-            if(y > target.y - tileSize/4 && y < target.y + tileSize/4){
+            if(y > target.y - tileSize/16 && y < target.y + tileSize/16){
                 up = false;
                 down = false;
             }
-            if(!up && !down && !left && !right){
-                getTarget();
-            }
+
 
             //actual movement
             if(left){
@@ -330,7 +335,9 @@ public class Brawler extends GameObject {
         if(destination!=null){
             g.setColor(Color.green);
             g.drawOval((int)(destination.x + xMap - width / 2), (int)(destination.y + yMap - height / 2), tileMap.getTileSize(), tileMap.getTileSize());
+            g.setColor(Color.black);
         }
+
     }
 
     public int getHealth(){
