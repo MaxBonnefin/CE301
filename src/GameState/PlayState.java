@@ -78,8 +78,8 @@ public class PlayState extends GameState{
 
             Random rand = new Random();
 
-            int numBrawlers = rand.nextInt((25 - 15) + 1) + 15;
-
+            //int numBrawlers = rand.nextInt((25 - 15) + 1) + 15;
+            int numBrawlers =1;
             for(int i = 0; i < numBrawlers; i++){
                 int rx, ry;
 

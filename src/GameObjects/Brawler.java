@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Brawler extends GameObject {
@@ -20,7 +21,14 @@ public class Brawler extends GameObject {
     private double hitSpeed;
     private boolean hit;
     private double x1, y1;
+
+    //variables for A* navigation
     public Point target;
+    public Point destination;
+    public ArrayList<Point> closedList;
+    public ArrayList<Point> openList;
+    public int z = 64;
+
 
     public Brawler(TileMap tm) {
         super(tm);
@@ -43,7 +51,86 @@ public class Brawler extends GameObject {
         }catch(Exception e){
             e.printStackTrace();
         }
-        getTarget();
+
+        openList = new ArrayList<Point>();
+        closedList = new ArrayList<Point>();
+
+    }
+
+    public ArrayList findPath(){
+       //path found by implementing A* algorithm
+        Point startPos = new Point((int)x,(int)y);
+        openList.add(startPos); // add original position to the open list
+
+        do{
+            int loops = 0;
+            Point current;
+            double smallestF = Integer.MAX_VALUE;
+            int index = 0;
+            for(int i= 0; i < openList.size(); i++){
+                //find position with lowest f score
+                current = openList.get(i);
+                double g = loops * tileSize;
+                double h = Math.sqrt(Math.pow((destination.x - current.x), 2) + Math.pow((destination.y - current.y), 2));
+                double f = g + h;
+                if (f<smallestF){
+                    smallestF = f;
+                    index = i;
+                }
+            }
+            current = openList.get(index);
+
+            closedList.add(current);
+            openList.remove(current);
+
+            if (closedList.contains(destination)) {
+                //found path
+                getTarget();
+                break;
+            }
+
+            //get all non-obstacle adjacent squares
+            ArrayList<Point> adjTiles = new ArrayList<Point>();
+            if(tileMap.getType(current.y/tileSize-1,current.x/tileSize)==0){
+                adjTiles.add(new Point(current.x,current.y-tileSize));
+            }
+            if(tileMap.getType(current.y/tileSize+1,current.x/tileSize)==0){
+                adjTiles.add(new Point(current.x,current.y+tileSize));
+            }
+            if(tileMap.getType(current.y/tileSize-1,current.x/tileSize-1)==0){
+                adjTiles.add(new Point(current.x-tileSize,current.y-tileSize));
+            }
+            if(tileMap.getType(current.y/tileSize+1,current.x/tileSize+1)==0){
+                adjTiles.add(new Point(current.x+tileSize,current.y+tileSize));
+            }
+            if(tileMap.getType(current.y/tileSize-1,current.x/tileSize+1)==0){
+                adjTiles.add(new Point(current.x+tileSize,current.y-tileSize));
+            }
+            if(tileMap.getType(current.y/tileSize+1,current.x/tileSize-1)==0){
+                adjTiles.add(new Point(current.x-tileSize,current.y+tileSize));
+            }
+            if(tileMap.getType(current.y/tileSize,current.x/tileSize+1)==0){
+                adjTiles.add(new Point(current.x+tileSize,current.y));
+            }
+            if(tileMap.getType(current.y/tileSize,current.x/tileSize-1)==0){
+                adjTiles.add(new Point(current.x-tileSize,current.y));
+            }
+
+            for (int i= 0; i < adjTiles.size(); i++){
+                if(closedList.contains(adjTiles.get(i))){
+                    continue;
+                }
+                if(!openList.contains(adjTiles.get(i))){
+                    openList.add(adjTiles.get(i));
+                }else{
+
+                }
+            }
+
+            loops++;
+        }while(!openList.isEmpty()); //no path
+
+        return closedList;
     }
 
     public void calculateKnockback(double theta, int distance){
@@ -68,8 +155,11 @@ public class Brawler extends GameObject {
     }
 
     public void update(){
+
         //update position
-        //getNextLocation();
+        if(destination == null){
+            getDestination();
+        }
         getNextPosition();
         checkObstacleCollision();
         setPosition(xTemp, yTemp);
@@ -79,9 +169,15 @@ public class Brawler extends GameObject {
         if(angle < 0){
             angle += 360;
         }
+        System.out.println("Dest: "+destination.toString());
+        System.out.println("Path: "+closedList.toString());
+
+
     }
 
-    public Point getTarget(){
+
+
+    public Point getDestination(){
         Random rand = new Random();
         int rx, ry;
 
@@ -95,7 +191,19 @@ public class Brawler extends GameObject {
             ry = r.nextInt(tileMap.getNumRows());
         }
 
-        return target = new Point(rx * tileMap.getTileSize() + tileMap.getTileSize() / 2,ry * tileMap.getTileSize() + tileMap.getTileSize() / 2);
+        destination = new Point(rx * tileMap.getTileSize() + tileMap.getTileSize() / 2, ry * tileMap.getTileSize() + tileMap.getTileSize() / 2);
+        findPath();
+        return destination;
+    }
+
+    public Point getTarget(){
+
+        target = closedList.get(0);
+        closedList.remove(0);
+        if(closedList.isEmpty()){
+            getDestination();
+        }
+        return target;
     }
 
     private void getNextPosition() {
@@ -116,6 +224,37 @@ public class Brawler extends GameObject {
             hit = false;
 
         }else{
+
+            //direction selection
+
+            if(target.x > x){
+                left = false;
+                right = true;
+            }
+            if(target.x < x){
+                right = false;
+                left = true;
+            }
+            if(x > target.x - tileSize/4 && x < target.x + tileSize/4){
+                left = false;
+                right = false;
+            }
+            if(target.y > y){
+                up = false;
+                down = true;
+            }
+            if(target.y < y){
+                down = false;
+                up = true;
+            }
+            if(y > target.y - tileSize/4 && y < target.y + tileSize/4){
+                up = false;
+                down = false;
+            }
+            if(!up && !down && !left && !right){
+                getTarget();
+            }
+
             //actual movement
             if(left){
                 dx -= moveSpeed;
@@ -164,33 +303,6 @@ public class Brawler extends GameObject {
                 }
             }
 
-            if(target.x > x){
-                left = false;
-                right = true;
-            }
-            if(target.x < x){
-                right = false;
-                left = true;
-            }
-            if(x > target.x - 1 && x < target.x + 1){
-                left = false;
-                right = false;
-            }
-            if(target.y > y){
-                up = false;
-                down = true;
-            }
-            if(target.y < y){
-                down = false;
-                up = true;
-            }
-            if(y > target.y - 1 && y < target.y + 1){
-                up = false;
-                down = false;
-            }
-            if(!up && !down && !left && !right){
-                getTarget();
-            }
         }
     }
 
@@ -204,14 +316,21 @@ public class Brawler extends GameObject {
         g.transform(trans);
         g.drawImage(sprite, (int) (x + xMap - width / 2), (int) (y + yMap - height / 2), null);
 
-        //DEBUG TEXT
-        //g.drawString((x + ", "+ y),(int)(x + xMap),(int)(y + yMap));
+
 
         //reset transform
         g.setTransform(reset);
-
+        //DEBUG TEXT
+        g.drawString((x + ", "+ y),(int)(x + xMap),(int)(y + yMap));
         //target
-        g.drawOval((int)(target.x + xMap - width / 2), (int)(target.y + yMap - height / 2), tileMap.getTileSize(), tileMap.getTileSize());
+        if(target!=null){
+            g.drawOval((int)(target.x + xMap - width / 2), (int)(target.y + yMap - height / 2), tileMap.getTileSize(), tileMap.getTileSize());
+        }
+        //dest
+        if(destination!=null){
+            g.setColor(Color.green);
+            g.drawOval((int)(destination.x + xMap - width / 2), (int)(destination.y + yMap - height / 2), tileMap.getTileSize(), tileMap.getTileSize());
+        }
     }
 
     public int getHealth(){
