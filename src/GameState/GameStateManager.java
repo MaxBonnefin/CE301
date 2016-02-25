@@ -9,11 +9,7 @@ public class GameStateManager {
 
     public static final int MENUSTATE = 0;
     public static final int PLAYSTATE = 1;
-    //TODO pause state
-    //public static final int PAUSESTATE = 2;
-    //TODO death state
-    //public static final int DEATHSTATE = 3;
-
+    public static final int DEATHSTATE = 2;
 
     public GameStateManager(){
 
@@ -22,6 +18,7 @@ public class GameStateManager {
         currentState = MENUSTATE;
         gameStates.add(new MenuState(this));
         gameStates.add(new PlayState(this));
+        gameStates.add(new DeathState(this));
     }
 
     public void setState(int state){

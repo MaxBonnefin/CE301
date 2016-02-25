@@ -133,6 +133,10 @@ public class PlayState extends GameState{
 
         }
 
+        //death
+        if(player.getHealth()<=0){
+            gsm.setState(GameStateManager.DEATHSTATE);
+        }
 
         //update player
         player.update();

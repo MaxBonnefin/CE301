@@ -7,23 +7,23 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 
 
-public class MenuState extends GameState{
+public class DeathState extends GameState{
 
 
     public double mouseX, mouseY;
     private int currentChoice = 0;
-    private String[] options = {"Start","Quit"};
+    private String[] options = {"Restart","Return"};
 
     private Color titleColor;
     private Font titleFont;
     private Font font;
 
-    public MenuState(GameStateManager gsm){
+    public DeathState(GameStateManager gsm){
 
         this.gsm = gsm;
 
-            titleFont = new Font("Century Gothic", Font.PLAIN, 56);
-            font = new Font("Arial", Font.PLAIN, 24);
+        titleFont = new Font("Century Gothic", Font.PLAIN, 56);
+        font = new Font("Arial", Font.PLAIN, 24);
 
 
     }
@@ -42,10 +42,11 @@ public class MenuState extends GameState{
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
 
+
         //draw title
         g.setFont(titleFont);
         g.setColor(Color.RED);
-        g.drawString("Swashbuckling Brawler", 6, 150);
+        g.drawString("Oh Dear, You Died!", 6, 150);
 
         //draw menu options
         g.setFont(font);
@@ -63,12 +64,12 @@ public class MenuState extends GameState{
 
     private void select(){
         if(currentChoice ==0){
-            //start
+            //restart
             gsm.setState(GameStateManager.PLAYSTATE);
         }
         if(currentChoice ==1){
-            //quit
-            System.exit(0);
+            //quit to menu
+            gsm.setState(GameStateManager.MENUSTATE);
         }
     }
 
@@ -96,10 +97,7 @@ public class MenuState extends GameState{
 
     @Override
     public void keyReleased(int k){
-        if(k == KeyEvent.VK_ESCAPE) {
-            SoundManager.play(SoundManager.menuSelect);
-            System.exit(0);
-        }
+
     }
 
     @Override
@@ -113,3 +111,4 @@ public class MenuState extends GameState{
     }
 
 }
+
