@@ -46,7 +46,7 @@ public class DeathState extends GameState{
         //draw title
         g.setFont(titleFont);
         g.setColor(Color.RED);
-        g.drawString("Oh Dear, You Died!", 6, 150);
+        g.drawString("Oh Dear, You Died!", 60, 150);
 
         //draw menu options
         g.setFont(font);

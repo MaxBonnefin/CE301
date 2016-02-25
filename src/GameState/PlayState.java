@@ -49,6 +49,8 @@ public class PlayState extends GameState{
 
     @Override
     public void init() {
+        score = 0;
+        wave = 1;
 
         tileMap = new TileMap(50);
         tileMap.loadTiles("/Tilesets/tileset.png");
