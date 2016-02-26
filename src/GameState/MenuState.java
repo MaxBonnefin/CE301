@@ -9,8 +9,6 @@ import java.awt.event.KeyEvent;
 
 public class MenuState extends GameState{
 
-
-    public double mouseX, mouseY;
     private int currentChoice = 0;
     private String[] options = {"Start","Quit"};
 

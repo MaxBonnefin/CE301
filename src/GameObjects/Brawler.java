@@ -92,29 +92,68 @@ public class Brawler extends GameObject {
 
             //get all non-obstacle adjacent squares
             ArrayList<Point> adjTiles = new ArrayList<Point>();
-            if(tileMap.getType(current.y/tileSize-1,current.x/tileSize)==0){
-                adjTiles.add(new Point(current.x,current.y-tileSize));
+            try{
+                if(tileMap.getType(current.y/tileSize-1,current.x/tileSize)==0){
+                    adjTiles.add(new Point(current.x,current.y-tileSize));
+                }
+            }catch (IndexOutOfBoundsException e){
+                continue;
             }
-            if(tileMap.getType(current.y/tileSize+1,current.x/tileSize)==0){
-                adjTiles.add(new Point(current.x,current.y+tileSize));
+
+            try{
+                if(tileMap.getType(current.y/tileSize+1,current.x/tileSize)==0){
+                    adjTiles.add(new Point(current.x,current.y+tileSize));
+                }
+            }catch (IndexOutOfBoundsException e){
+                continue;
             }
-            if(tileMap.getType(current.y/tileSize-1,current.x/tileSize-1)==0){
-                adjTiles.add(new Point(current.x-tileSize,current.y-tileSize));
+
+            try{
+                if(tileMap.getType(current.y/tileSize-1,current.x/tileSize-1)==0){
+                    adjTiles.add(new Point(current.x-tileSize,current.y-tileSize));
+                }
+            }catch (IndexOutOfBoundsException e){
+                continue;
             }
-            if(tileMap.getType(current.y/tileSize+1,current.x/tileSize+1)==0){
-                adjTiles.add(new Point(current.x+tileSize,current.y+tileSize));
+
+            try{
+                if(tileMap.getType(current.y/tileSize+1,current.x/tileSize+1)==0){
+                    adjTiles.add(new Point(current.x+tileSize,current.y+tileSize));
+                }
+            }catch (IndexOutOfBoundsException e){
+                continue;
             }
-            if(tileMap.getType(current.y/tileSize-1,current.x/tileSize+1)==0){
-                adjTiles.add(new Point(current.x+tileSize,current.y-tileSize));
+
+            try{
+                if(tileMap.getType(current.y/tileSize-1,current.x/tileSize+1)==0){
+                    adjTiles.add(new Point(current.x+tileSize,current.y-tileSize));
+                }
+            }catch (IndexOutOfBoundsException e){
+                continue;
             }
-            if(tileMap.getType(current.y/tileSize+1,current.x/tileSize-1)==0){
-                adjTiles.add(new Point(current.x-tileSize,current.y+tileSize));
+
+            try{
+                if(tileMap.getType(current.y/tileSize+1,current.x/tileSize-1)==0){
+                    adjTiles.add(new Point(current.x-tileSize,current.y+tileSize));
+                }
+            }catch (IndexOutOfBoundsException e){
+                continue;
             }
-            if(tileMap.getType(current.y/tileSize,current.x/tileSize+1)==0){
-                adjTiles.add(new Point(current.x+tileSize,current.y));
+
+            try{
+                if(tileMap.getType(current.y/tileSize,current.x/tileSize+1)==0){
+                    adjTiles.add(new Point(current.x+tileSize,current.y));
+                }
+            }catch (IndexOutOfBoundsException e){
+                continue;
             }
-            if(tileMap.getType(current.y/tileSize,current.x/tileSize-1)==0){
-                adjTiles.add(new Point(current.x-tileSize,current.y));
+
+            try{
+                if(tileMap.getType(current.y/tileSize,current.x/tileSize-1)==0){
+                    adjTiles.add(new Point(current.x-tileSize,current.y));
+                }
+            }catch (IndexOutOfBoundsException e){
+                continue;
             }
 
             for (int i= 0; i < adjTiles.size(); i++){

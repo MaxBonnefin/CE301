@@ -9,8 +9,6 @@ import java.awt.event.KeyEvent;
 
 public class DeathState extends GameState{
 
-
-    public double mouseX, mouseY;
     private int currentChoice = 0;
     private String[] options = {"Restart","Return"};
 
@@ -48,6 +46,7 @@ public class DeathState extends GameState{
         g.setColor(Color.RED);
         g.drawString("Oh Dear, You Died!", 60, 150);
 
+
         //draw menu options
         g.setFont(font);
         for (int i = 0; i < options.length; i++){
@@ -62,10 +61,11 @@ public class DeathState extends GameState{
 
     }
 
-    private void select(){
+    private void select() {
         if(currentChoice ==0){
             //restart
             gsm.setState(GameStateManager.PLAYSTATE);
+            init();
         }
         if(currentChoice ==1){
             //quit to menu

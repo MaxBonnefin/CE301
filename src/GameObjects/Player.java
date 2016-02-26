@@ -45,7 +45,8 @@ public class Player extends GameObject {
         maxSpeed = 1.8;
         stopSpeed = 0.5;
 
-        health = maxHealth = 50;
+        health = 20;
+        maxHealth = 50;
         slashDamage = 10;
         slashRange = 50;
 
