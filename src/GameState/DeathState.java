@@ -22,7 +22,7 @@ public class DeathState extends GameState{
 
         titleFont = new Font("Century Gothic", Font.PLAIN, 56);
         font = new Font("Arial", Font.PLAIN, 24);
-
+        SoundManager.play(SoundManager.charDeath);
 
     }
 

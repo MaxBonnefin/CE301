@@ -1,6 +1,7 @@
 package GameObjects;
 
 import TileMap.TileMap;
+import Utilities.SoundManager;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -27,8 +28,6 @@ public class Brawler extends GameObject {
     public Point destination;
     public ArrayList<Point> closedList;
     public ArrayList<Point> openList;
-    public int z = 64;
-
 
     public Brawler(TileMap tm) {
         super(tm);
@@ -38,7 +37,7 @@ public class Brawler extends GameObject {
         collisionHeight = 50;
 
         moveSpeed = 0.4;
-        maxSpeed = 1.8;
+        maxSpeed = 1.6;
         hitSpeed = 6.0;
         stopSpeed = 0.5;
 
@@ -185,6 +184,7 @@ public class Brawler extends GameObject {
     }
 
     public void hit(int damage){
+        SoundManager.play(SoundManager.brawlerHit);
         if(dead){
             return;
         }
@@ -193,6 +193,7 @@ public class Brawler extends GameObject {
             health = 0;
         }
         if (health == 0){
+            SoundManager.play(SoundManager.brawlerDeath);
             dead = true;
         }
     }
@@ -201,7 +202,7 @@ public class Brawler extends GameObject {
 
         //update position
         if(destination == null){
-            getDestination();
+             getDestination();
         }
         getNextPosition();
         checkObstacleCollision();
@@ -346,7 +347,6 @@ public class Brawler extends GameObject {
                     }
                 }
             }
-
         }
     }
 
@@ -365,6 +365,7 @@ public class Brawler extends GameObject {
         //reset transform
         g.setTransform(reset);
         //DEBUG TEXT
+        /*
         g.drawString((x + ", "+ y),(int)(x + xMap),(int)(y + yMap));
         //target
         if(target!=null){
@@ -376,7 +377,7 @@ public class Brawler extends GameObject {
             g.drawOval((int)(destination.x + xMap - width / 2), (int)(destination.y + yMap - height / 2), tileMap.getTileSize(), tileMap.getTileSize());
             g.setColor(Color.black);
         }
-
+        */
     }
 
     public int getHealth(){

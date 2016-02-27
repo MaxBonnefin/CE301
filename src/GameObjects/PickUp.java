@@ -26,7 +26,7 @@ public class PickUp extends GameObject{
     }
 
     public void activate(Player player){
-        player.setHealth(player.getHealth() - 60);
+        player.setHealth(player.getHealth() + 20);
     }
 
     public void render(Graphics2D g){

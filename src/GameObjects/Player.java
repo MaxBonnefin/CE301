@@ -1,6 +1,7 @@
 package GameObjects;
 
 import TileMap.TileMap;
+import Utilities.SoundManager;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -45,13 +46,12 @@ public class Player extends GameObject {
         maxSpeed = 1.8;
         stopSpeed = 0.5;
 
-        health = 20;
-        maxHealth = 50;
+        health = maxHealth = 50;
         slashDamage = 10;
         slashRange = 50;
 
         lungeDamage = 20;
-        lungeRange = 60;
+        lungeRange = 120;
 
         //load sprites
         try{
@@ -68,7 +68,7 @@ public class Player extends GameObject {
 
         //check slash
         if(slashing||lunging){
-
+            SoundManager.play(SoundManager.slash);
             for(int i = 0; i < brawlers.size(); i++){
                 Brawler b = brawlers.get(i);
 
@@ -82,13 +82,32 @@ public class Player extends GameObject {
                 double anglediff = Math.min(Math.abs(angle - theta), 360 - Math.abs(theta));
                 if(slashing){
                     if(anglediff <= 45  && slashRange >= range){
-                        b.calculateKnockback(angle,60);
+                        if(range<20){
+                            double newAngle = angle - 180;
+                            if(newAngle < 0){
+                                newAngle += 360;
+                            }
+                            b.calculateKnockback(newAngle,60);
+
+                        }else{
+                            b.calculateKnockback(angle,60);
+                        }
                         b.hit(slashDamage);
                     }
                 }
                 if(lunging){
                     if(anglediff <= 45  && lungeRange >= range){
-                        b.calculateKnockback(angle,60);
+                        if(range<20){
+                            double newAngle = angle - 180;
+                            if(newAngle < 0){
+                                newAngle += 360;
+                            }
+                            b.calculateKnockback(newAngle,200);
+
+                        }else{
+                            b.calculateKnockback(angle,200);
+                        }
+                        b.calculateKnockback(angle,200);
                         b.hit(lungeDamage);
                     }
                 }
@@ -97,7 +116,6 @@ public class Player extends GameObject {
     }
 
     private void getNextPosition(){
-
         //movement
         if(left){
             dx -= moveSpeed;
@@ -218,6 +236,9 @@ public class Player extends GameObject {
     }
     public void setParrying(boolean b){
         if(!dodging && !slashing && !lunging){
+            if(!parrying){
+                SoundManager.play(SoundManager.slash);
+            }
             parrying = b;
         }
     }
@@ -226,6 +247,7 @@ public class Player extends GameObject {
     public void setDodging(boolean b){
         dodging = b;
         if(dodging){
+            SoundManager.play(SoundManager.swoosh);
             moveSpeed = 1.2;
             maxSpeed = 9;
             dodgeTime = System.nanoTime();

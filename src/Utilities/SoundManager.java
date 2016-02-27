@@ -17,11 +17,22 @@ public class SoundManager {
     public final static Clip arrr = getClip("arrr");
     public final static Clip menuMove = getClip("menuMove");
     public final static Clip menuSelect = getClip("menuSelect");
+    public final static Clip charDeath = getClip("char_Death");
+    public final static Clip brawlerDeath = getClip("brawler_Death");
+    public final static Clip brawlerHit = getClip("brawler_Hit");
+    public final static Clip slash = getClip("slash");
+    public final static Clip swoosh = getClip("swoosh");
+
 
 
     public final static Clip[] clips = {arrr,
                                        menuMove,
                                        menuSelect,
+                                       charDeath,
+                                       brawlerHit,
+                                       brawlerDeath,
+                                       slash,
+                                       swoosh,
                                        };
 
     public static void play(Clip clip) {
