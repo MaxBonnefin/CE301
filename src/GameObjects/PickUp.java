@@ -25,6 +25,16 @@ public class PickUp extends GameObject{
         }
     }
 
+    @Override
+    public void calculateKnockback(double newAngle, int i) {
+
+    }
+
+    @Override
+    public void hit(int slashDamage) {
+
+    }
+
     public void activate(Player player){
         player.setHealth(player.getHealth() + 20);
     }

@@ -5,6 +5,7 @@ import GameObjects.PickUp;
 import GameObjects.Player;
 import Main.GamePanel;
 import TileMap.TileMap;
+import Utilities.SoundManager;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -77,11 +78,9 @@ public class PlayState extends GameState{
         if(brawlers.isEmpty()){
             Brawler b;
 
-
             Random rand = new Random();
 
-            //int numBrawlers = rand.nextInt((25 - 15) + 1) + 15;
-            int numBrawlers =1;
+            int numBrawlers = rand.nextInt((15 - 10) + 1) + 10;
             for(int i = 0; i < numBrawlers; i++){
                 int rx, ry;
 
@@ -94,12 +93,14 @@ public class PlayState extends GameState{
                     rx = r.nextInt(tileMap.getNumCols());
                     ry = r.nextInt(tileMap.getNumRows());
                 }
+
                 points.add(new Point(rx * tileMap.getTileSize() + tileMap.getTileSize() / 2, ry * tileMap.getTileSize() + tileMap.getTileSize() / 2));
             }
 
 
             for(int i = 0; i < points.size(); i++) {
                 b = new Brawler(tileMap);
+
                 b.setPosition(points.get(i).x, points.get(i).y);
                 brawlers.add(b);
             }
@@ -137,6 +138,7 @@ public class PlayState extends GameState{
 
         //death
         if(player.getHealth()<=0){
+            SoundManager.play(SoundManager.charDeath);
             gsm.setState(GameStateManager.DEATHSTATE);
             init();
         }
@@ -161,6 +163,7 @@ public class PlayState extends GameState{
         for(int i = 0; i < brawlers.size(); i++){
             Brawler b = brawlers.get(i);
             b.update();
+
             if(b.isDead()){
                 brawlers.remove(i);
                 score += 10;
@@ -176,6 +179,7 @@ public class PlayState extends GameState{
         lastHealth = player.getHealth();
 
     }
+
 
     @Override
     public void render(Graphics2D g) {
@@ -204,11 +208,8 @@ public class PlayState extends GameState{
         font = new Font("Arial", Font.PLAIN, 24);
         g.setFont(font);
         g.setColor(Color.WHITE);
-        g.drawString("Health: " + player.getHealth()+ "/" + player.getMaxHealth(), 5, 25);
+        g.drawString("WAVE " + wave, 5, 25);
         g.drawString("Score: " + score, 5, 50);
-        g.drawString("WAVE " + wave, 525, 25);
-
-
     }
 
     @Override

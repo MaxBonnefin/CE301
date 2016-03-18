@@ -15,8 +15,8 @@ import java.awt.image.BufferedImage;
 public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener {
 
     // dimensions
-    public static final int WIDTH = 640;
-    public static final int HEIGHT = 480;
+    public static final int WIDTH = 1920;
+    public static final int HEIGHT = 1080;
     public static final int SCALE = 1;
 
     //game thread
@@ -69,14 +69,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         long start = 0;
         long elapsed;
         long wait;
-
-        //TODO decide if the cursor should be visible
-        /*Toolkit toolkit = Toolkit.getDefaultToolkit();
-        Point hotSpot = new Point(0,0);
-        BufferedImage cursorImage = new BufferedImage(1, 1, BufferedImage.TRANSLUCENT);
-        Cursor invisibleCursor = toolkit.createCustomCursor(cursorImage, hotSpot, "InvisibleCursor");
-        setCursor(invisibleCursor);
-        */
 
         //game loop
         while(running){

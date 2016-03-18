@@ -20,8 +20,8 @@ public class MenuState extends GameState{
 
         this.gsm = gsm;
 
-            titleFont = new Font("Century Gothic", Font.PLAIN, 56);
-            font = new Font("Arial", Font.PLAIN, 24);
+            titleFont = new Font("Century Gothic", Font.PLAIN, 172);
+            font = new Font("Arial", Font.PLAIN, 42);
 
 
     }
@@ -43,7 +43,9 @@ public class MenuState extends GameState{
         //draw title
         g.setFont(titleFont);
         g.setColor(Color.RED);
-        g.drawString("Swashbuckling Brawler", 6, 150);
+        String title = "Brawling Buccaneers!";
+        int stringLen = (int)g.getFontMetrics().getStringBounds(title, g).getWidth();
+        g.drawString(title, 960 - stringLen/2, 350);
 
         //draw menu options
         g.setFont(font);
@@ -54,7 +56,9 @@ public class MenuState extends GameState{
             else{
                 g.setColor(new Color(125,0,0));
             }
-            g.drawString(options[i], 290, 280 + i * 30);
+            String choice = options[i];
+            int choiceStringLen = (int)g.getFontMetrics().getStringBounds(choice, g).getWidth();
+            g.drawString(choice, 960 - choiceStringLen/2, 580 + i * 45);
         }
 
     }

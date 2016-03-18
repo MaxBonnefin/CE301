@@ -14,6 +14,7 @@ public class Player extends GameObject {
     private int health;
     private int maxHealth;
     private boolean dead;
+    private boolean hit;
     private BufferedImage sprite;
     private BufferedImage sword;
     private BufferedImage parrysword;
@@ -22,6 +23,8 @@ public class Player extends GameObject {
 
     private long dodgeTime = 0;
     private long time = 0;
+
+    private double x1, y1;
 
     //slash attack
     private boolean slashing;
@@ -115,6 +118,27 @@ public class Player extends GameObject {
         }
     }
 
+    public void calculateKnockback(double theta, int distance){
+        hit = true;
+        //using trigonometry to calculate point from angle
+        x1 = x + distance * Math.cos(theta);
+        y1 = y + distance * Math.sin(theta);
+    }
+
+    public void hit(int damage){
+        SoundManager.play(SoundManager.brawlerHit);
+        if(dead){
+            return;
+        }
+        health -= damage;
+        if (health < 0){
+            health = 0;
+        }
+        if (health == 0){
+            SoundManager.play(SoundManager.brawlerDeath);
+            dead = true;
+        }
+    }
     private void getNextPosition(){
         //movement
         if(left){
@@ -212,6 +236,11 @@ public class Player extends GameObject {
         g.drawImage(sprite, (int) (x + xMap - width / 2), (int) (y + yMap - height / 2), null);
         //reset transform
         g.setTransform(reset);
+        //render health bar
+        g.setColor(new Color(16,133,12));
+        g.fillRect((int) (x + xMap) - health / 2, (int) (y + yMap) + 25, health, 5);
+        g.setColor(Color.black);
+        g.drawRect((int) (x + xMap) - health / 2, (int) (y + yMap) + 25, health, 5);
     }
 
     public int getHealth(){
