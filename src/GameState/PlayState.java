@@ -80,7 +80,7 @@ public class PlayState extends GameState{
 
             Random rand = new Random();
 
-            int numBrawlers = rand.nextInt((15 - 10) + 1) + 10;
+            int numBrawlers = 1;//rand.nextInt((15 - 10) + 1) + 10;
             for(int i = 0; i < numBrawlers; i++){
                 int rx, ry;
 
@@ -197,7 +197,9 @@ public class PlayState extends GameState{
 
         //render brawlers
         for (int i = 0; i < brawlers.size(); i++) {
-            brawlers.get(i).render(g);
+            if(!brawlers.get(i).notOnScreen()){
+                brawlers.get(i).render(g);
+            }
         }
 
         //render player

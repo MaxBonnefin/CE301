@@ -169,7 +169,9 @@ public abstract class GameObject {
     public void setDown(boolean b){
         down = b;
     }
-    public void setDodging(boolean b){dodging = b; }
+    public void setDodging(boolean b){
+        dodging = b;
+    }
 
     public abstract void calculateKnockback(double newAngle, int i);
 

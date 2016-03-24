@@ -31,7 +31,7 @@ public class Brawler extends GameObject{
     private boolean fast;
     public boolean wantFight;
 
-    //variables for A* navigation
+    //variables for A* pathfinding
     public Point target;
     public Point destination;
     private ArrayList<PathNode> path;
@@ -45,6 +45,7 @@ public class Brawler extends GameObject{
     private boolean lunging;
     private int lungeDamage;
     private int lungeRange;
+
     //parrying
     private boolean parrying;
 
@@ -306,14 +307,7 @@ public class Brawler extends GameObject{
 
 
         if(destination==null||((int)x==destination.x && (int)y==destination.y)||path.isEmpty()){
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    getDestination();
-                }
-            };
-            Thread t = new Thread(r);
-            t.start();
+            getDestination();
         }
 
         //update position
