@@ -338,26 +338,22 @@ public class Brawler extends GameObject{
 
     public Point getDestination(){
 
-        if(destination==null||((destination.x > x-tileSize/16 &&destination.x < x+tileSize/16)&& (destination.y> y-tileSize/16 && destination.y < y+tileSize/16))){
+        Random rand = new Random();
+        int rx, ry;
 
-            Random rand = new Random();
-            int rx, ry;
+        rx = rand.nextInt(tileMap.getNumCols());
+        ry = rand.nextInt(tileMap.getNumRows());
 
-            rx = rand.nextInt(tileMap.getNumCols());
-            ry = rand.nextInt(tileMap.getNumRows());
+        while(tileMap.getType(ry, rx) != 0){
+            Random r = new Random();
 
-            while(tileMap.getType(ry, rx) != 0){
-                Random r = new Random();
-
-                rx = r.nextInt(tileMap.getNumCols());
-                ry = r.nextInt(tileMap.getNumRows());
-            }
-
-            destination = new Point(rx * tileMap.getTileSize() + tileMap.getTileSize() / 2, ry * tileMap.getTileSize() + tileMap.getTileSize() / 2);
-
-            findPath();
-
+            rx = r.nextInt(tileMap.getNumCols());
+            ry = r.nextInt(tileMap.getNumRows());
         }
+
+        destination = new Point(rx * tileMap.getTileSize() + tileMap.getTileSize() / 2, ry * tileMap.getTileSize() + tileMap.getTileSize() / 2);
+
+        findPath();
 
         return destination;
     }
