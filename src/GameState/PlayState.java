@@ -80,7 +80,7 @@ public class PlayState extends GameState{
 
             Random rand = new Random();
 
-            int numBrawlers = 1;//rand.nextInt((15 - 10) + 1) + 10;
+            int numBrawlers = rand.nextInt((15 - 10) + 1) + 10;
             for(int i = 0; i < numBrawlers; i++){
                 int rx, ry;
 
@@ -93,7 +93,6 @@ public class PlayState extends GameState{
                     rx = r.nextInt(tileMap.getNumCols());
                     ry = r.nextInt(tileMap.getNumRows());
                 }
-
                 points.add(new Point(rx * tileMap.getTileSize() + tileMap.getTileSize() / 2, ry * tileMap.getTileSize() + tileMap.getTileSize() / 2));
             }
 

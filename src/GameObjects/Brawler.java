@@ -151,8 +151,13 @@ public class Brawler extends GameObject{
 
         PathNode current;
 
+        int loops =0;
         main:
         while(!openList.isEmpty()){ //no path found
+            loops++;
+            if(loops>500){
+                break main;
+            }
             double smallestF = Integer.MAX_VALUE;
             int index = 0;
             PathNode check;
@@ -267,6 +272,11 @@ public class Brawler extends GameObject{
                 openList.add(successor);
             }
             closedList.add(current);
+        }
+
+        if(closedList.size()==0){
+            //getDestination();
+            findPath();
         }
 
         //build path
