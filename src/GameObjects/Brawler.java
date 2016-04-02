@@ -326,7 +326,7 @@ public class Brawler extends GameObject{
         setPosition(xTemp, yTemp);
 
         //update rotation angle
-        angle = Math.toDegrees(Math.atan2(target.y - this.x, target.x - this.y)- Math.PI/2);
+        angle = Math.toDegrees(Math.atan2(target.y - this.y, target.x - this.x)- Math.PI/2);
         if(angle < 0){
             angle += 360;
         }
@@ -501,8 +501,8 @@ public class Brawler extends GameObject{
         g.drawRect((int) (x + xMap) - health / 2, (int) (y + yMap) + 25, health, 5);
 
         //DEBUG TEXT
-        //g.setColor(Color.black);
-        //g.drawString((x + ", "+ y),(int)(x + xMap),(int)(y + yMap));
+        g.setColor(Color.black);
+        g.drawString((/*x + ", "+ y + */"a=" + angle),(int)(x + xMap),(int)(y + yMap));
         //target
         if(target!=null){
             g.setColor(Color.black);
