@@ -70,6 +70,7 @@ public class PlayState extends GameState{
         brawlers = new ArrayList<Brawler>();
 
         populateBrawlers();
+
     }
 
     private void populateBrawlers() {
@@ -80,7 +81,7 @@ public class PlayState extends GameState{
 
             Random rand = new Random();
 
-            int numBrawlers = rand.nextInt((15 - 10) + 1) + 10;
+            int numBrawlers = rand.nextInt((15 - 10) + 1) + 10 + wave;
             for(int i = 0; i < numBrawlers; i++){
                 int rx, ry;
 
@@ -94,6 +95,7 @@ public class PlayState extends GameState{
                     ry = r.nextInt(tileMap.getNumRows());
                 }
                 points.add(new Point(rx * tileMap.getTileSize() + tileMap.getTileSize() / 2, ry * tileMap.getTileSize() + tileMap.getTileSize() / 2));
+
             }
 
 
@@ -103,6 +105,7 @@ public class PlayState extends GameState{
                 b.setPosition(points.get(i).x, points.get(i).y);
                 brawlers.add(b);
             }
+
         }
         points.clear();
 
@@ -115,7 +118,7 @@ public class PlayState extends GameState{
         if(brawlers.isEmpty()&& System.currentTimeMillis() > timer + 2000){
             wave++;
             score += 100;
-            int r = rand.nextInt(2);
+            int r = rand.nextInt(3);
             if(r == 0){
                 tileMap.reset(50);
                 tileMap.loadTiles("/Tilesets/tileset.png");
@@ -131,6 +134,14 @@ public class PlayState extends GameState{
                 tileMap.setPosition(0,0);
                 populateBrawlers();
                 player.setPosition(75,75);
+            }
+            if(r == 2){
+                tileMap.reset(50);
+                tileMap.loadTiles("/Tilesets/tileset.png");
+                tileMap.loadMap("/Maps/map3.map");
+                tileMap.setPosition(0,0);
+                populateBrawlers();
+                player.setPosition(200,200);
             }
 
         }
@@ -162,6 +173,8 @@ public class PlayState extends GameState{
         for(int i = 0; i < brawlers.size(); i++){
             Brawler b = brawlers.get(i);
             b.update();
+
+            //b.getGoal(brawlers);
 
             if(b.isDead()){
                 brawlers.remove(i);
@@ -211,6 +224,10 @@ public class PlayState extends GameState{
         g.setColor(Color.WHITE);
         g.drawString("WAVE " + wave, 5, 25);
         g.drawString("Score: " + score, 5, 50);
+
+        for(int i = 0; i < Integer.MAX_VALUE; i++){
+            pickups.add(new PickUp(tileMap));
+        }
     }
 
     @Override
@@ -248,6 +265,9 @@ public class PlayState extends GameState{
                 brawlers.remove(i);
                 i--;
             }
+        }
+        if(k == KeyEvent.VK_N){
+            player.setHealth(player.getHealth()-20);
         }
 
         //saving game
@@ -322,4 +342,7 @@ public class PlayState extends GameState{
         }
     }
 
+    public Player getPlayer(){
+        return player;
+    }
 }

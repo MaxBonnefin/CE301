@@ -130,7 +130,9 @@ public class Player extends GameObject {
         if(dead){
             return;
         }
-        health -= damage;
+        if(!parrying){
+            health -= damage;
+        }
         if (health < 0){
             health = 0;
         }

@@ -29,7 +29,9 @@ public class Brawler extends GameObject{
     private double x1, y1;
     private boolean strong;
     private boolean fast;
-    public boolean wantFight;
+    public int aggression; // 1 = aggressive, 2 = normal, 3 = cowardly
+    public GameObject goal;
+    public boolean inCombat = false;
 
     //variables for A* pathfinding
     public Point target;
@@ -74,17 +76,17 @@ public class Brawler extends GameObject{
         if(type == 1){
             strong = false;
             fast = false;
-            wantFight=true;
+            aggression = 2;
         }else if(type == 2){
             strong = true;
             fast = false;
-            wantFight=true;
+            aggression = 1;
             slashDamage = 20;
             lungeDamage = 40;
         }else if(type == 3){
             strong = false;
-            fast = false;
-            wantFight=false;
+            fast = true;
+            aggression = 3;
         }
 
         if(strong){
@@ -299,7 +301,6 @@ public class Brawler extends GameObject{
 
     public void hit(int damage){
         SoundManager.play(SoundManager.brawlerHit);
-        wantFight = true;
         if(dead){
             return;
         }
@@ -315,51 +316,62 @@ public class Brawler extends GameObject{
 
     public void update(){
 
+        if(!inCombat){
 
-        if(destination==null||((int)x==destination.x && (int)y==destination.y)||path.isEmpty()){
-            getDestination();
+            if(destination==null||((int)x==destination.x && (int)y==destination.y)||path.isEmpty()){
+                getDestination();
+            }
+
+            //update position
+            getNextPosition();
+            checkObstacleCollision();
+            setPosition(xTemp, yTemp);
+
+            //update rotation angle
+            angle = Math.toDegrees(Math.atan2(target.y - this.y, target.x - this.x)- Math.PI/2);
+            if(angle < 0){
+                angle += 360;
+            }
         }
 
-        //update position
-        getNextPosition();
-        checkObstacleCollision();
-        setPosition(xTemp, yTemp);
-
-        //update rotation angle
-        angle = Math.toDegrees(Math.atan2(target.y - this.y, target.x - this.x)- Math.PI/2);
-        if(angle < 0){
-            angle += 360;
+        if(goal != null){
+            if(Math.sqrt((Math.pow((goal.getY() - y), 2) + Math.pow((goal.getX() - x),2))) <= slashRange){
+                inCombat = true;
+            }
         }
-
-
     }
 
-
-
     public Point getDestination(){
-
         Random rand = new Random();
-        int rx, ry;
 
-        rx = rand.nextInt(tileMap.getNumCols());
-        ry = rand.nextInt(tileMap.getNumRows());
+        if(aggression == 2 || aggression == 3 || goal == null){
+            int rx, ry;
 
-        while(tileMap.getType(ry, rx) != 0){
-            Random r = new Random();
+            rx = rand.nextInt(tileMap.getNumCols());
+            ry = rand.nextInt(tileMap.getNumRows());
 
-            rx = r.nextInt(tileMap.getNumCols());
-            ry = r.nextInt(tileMap.getNumRows());
+            while(tileMap.getType(ry, rx) != 0){
+                Random r = new Random();
+
+                rx = r.nextInt(tileMap.getNumCols());
+                ry = r.nextInt(tileMap.getNumRows());
+            }
+
+            destination = new Point(rx * tileMap.getTileSize() + tileMap.getTileSize() / 2, ry * tileMap.getTileSize() + tileMap.getTileSize() / 2);
+
+        }else if(aggression == 1){
+            destination = new Point(goal.getX(),goal.getY());
         }
-
-        destination = new Point(rx * tileMap.getTileSize() + tileMap.getTileSize() / 2, ry * tileMap.getTileSize() + tileMap.getTileSize() / 2);
 
         findPath();
 
         return destination;
+
     }
 
 
     public Point getTarget(){
+
         if(!path.isEmpty()){
             target = path.get(path.size()-1).pos;
             path.remove(path.get(path.size() - 1));
@@ -467,6 +479,22 @@ public class Brawler extends GameObject{
         }
     }
 
+    public GameObject getGoal(ArrayList<Brawler> brawlers){
+        if(goal==null){
+            Random rand = new Random();
+            int index = rand.nextInt(brawlers.size());
+
+            while(this.equals(brawlers.get(index))){
+                Random r = new Random();
+                index = r.nextInt(brawlers.size());
+            }
+
+            goal = brawlers.get(index);
+            return goal;
+        }
+        return null;
+    }
+
     public void render(Graphics2D g){
         setMapPosition();
         AffineTransform reset = g.getTransform();
@@ -501,19 +529,20 @@ public class Brawler extends GameObject{
         g.drawRect((int) (x + xMap) - health / 2, (int) (y + yMap) + 25, health, 5);
 
         //DEBUG TEXT
-        g.setColor(Color.black);
-        g.drawString((/*x + ", "+ y + */"a=" + angle),(int)(x + xMap),(int)(y + yMap));
+
+        //g.setColor(Color.black);
+        //g.drawString((/*x + ", "+ y + */"a=" + angle),(int)(x + xMap),(int)(y + yMap));
         //target
-        if(target!=null){
-            g.setColor(Color.black);
-            g.drawOval((int)(target.x + xMap - width / 2), (int)(target.y + yMap - height / 2), tileMap.getTileSize(), tileMap.getTileSize());
-        }
+        //if(target!=null){
+         //   g.setColor(Color.black);
+         //   g.drawOval((int)(target.x + xMap - width / 2), (int)(target.y + yMap - height / 2), tileMap.getTileSize(), tileMap.getTileSize());
+        //}
         //dest
-        if(destination!=null){
-            g.setColor(Color.green);
-            g.drawOval((int)(destination.x + xMap - width / 2), (int)(destination.y + yMap - height / 2), tileMap.getTileSize(), tileMap.getTileSize());
-            g.setColor(Color.black);
-        }
+        //if(destination!=null){
+        //    g.setColor(Color.green);
+        //    g.drawOval((int)(destination.x + xMap - width / 2), (int)(destination.y + yMap - height / 2), tileMap.getTileSize(), tileMap.getTileSize());
+        //    g.setColor(Color.black);
+        //}
 
     }
 

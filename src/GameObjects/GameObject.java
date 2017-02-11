@@ -103,8 +103,7 @@ public abstract class GameObject {
         int topTile = ((int)y - collisionHeight / 2) / tileSize;
         int bottomTile = ((int)y + collisionHeight / 2 - 1) / tileSize;
 
-        if(topTile < 0 || bottomTile >= tileMap.getNumRows() ||
-                leftTile < 0 || rightTile >= tileMap.getNumCols()) {
+        if(topTile < 0 || bottomTile >= tileMap.getNumRows() || leftTile < 0 || rightTile >= tileMap.getNumCols()) {
             topLeft = topRight = bottomLeft = bottomRight = false;
             return;
         }
@@ -143,10 +142,7 @@ public abstract class GameObject {
         this.x = x;
         this.y = y;
     }
-    public void setVector(double x, double y){
-        this.dx = dx;
-        this.dy = dy;
-    }
+
     public void setMapPosition(){
         xMap = tileMap.getX();
         yMap = tileMap.getY();
